@@ -7,6 +7,7 @@ import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.listener.message.MessageCreateListener;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,15 +20,22 @@ import java.util.Collection;
 @Slf4j
 public class DiscordBot implements  DiscordBroadcaster {
 
-    private static final String TOKEN = "Mjg4OTY0MTQ3NzIxNDA0NDE2.C6FikA.7S0d61a7Tjy_Qx_-fFrQkgqI_04";
-    private DiscordAPI api = Javacord.getApi(TOKEN, true);
+    @Value("${TOKEN}")
+    private String TOKEN;
+
+    private DiscordAPI api;
 
     public DiscordBot() {
     }
 
     @PostConstruct
     public void startService() {
-        service();
+        if (TOKEN != null) {
+            this.api = Javacord.getApi(TOKEN, true);
+            service();
+        } else {
+            log.error("NO DISCORD BOT TOKEN DEFINED!");
+        }
     }
 
     public void service() {
