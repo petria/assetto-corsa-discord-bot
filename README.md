@@ -14,3 +14,6 @@ TOKEN=<your discord bot token here>
 
 See: https://github.com/BtoBastian/Javacord/wiki/Create-bot-and-add-it-to-a-server
 
+
+CI Jenkins: https://petri.airiot.fi/jenkins/job/MASTER%20-%20assetto-corsa-discord-bot/
+
