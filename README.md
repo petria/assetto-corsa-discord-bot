@@ -8,5 +8,13 @@ Brief usage:
 
 Only tested in Linux environment maybe works with Windows too.
 
+You need application.properties file in the directory where application is used. There must be
+
+TOKEN=<your discord bot token here>
+
+See: https://github.com/BtoBastian/Javacord/wiki/Create-bot-and-add-it-to-a-server
+
+
+
 
 
