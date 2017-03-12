@@ -1,4 +1,6 @@
-package airiot.fi.bot;
+package airiot.fi.bot.feedparser;
+
+import airiot.fi.bot.AssettoCorsaEvent;
 
 /**
  * Created by Petri Airio on 8.3.2017.

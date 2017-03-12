@@ -1,4 +1,4 @@
-package airiot.fi.bot;
+package airiot.fi.bot.feedparser;
 
 /**
  * Created by Petri Airio on 8.3.2017.
@@ -11,7 +11,6 @@ public enum KnownLine {
     DRIVER_ACCEPTED_FOR("DRIVER ACCEPTED FOR CAR (.*)", "Driver accepted for car: %s"),
     DRIVER("DRIVER: (.*)", "Driver: %s"),
     LAP("LAP (.*)", "Lap: %s"),
-    LAP_WITH_CUTS("LAP WITH CUTS:(.*)", "Lap with cuts: %s"),
     NEW_PICKUP_CONNECTION("NEW PICKUP CONNECTION from (.*)", "New pickup connection from: %s"),
     REQUEST_CAR("REQUESTED CAR: (.*)", "Requested car: %s");
 

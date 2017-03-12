@@ -1,5 +1,7 @@
 package airiot.fi.bot;
 
+import airiot.fi.bot.feedparser.KnownLine;
+
 /**
  * Created by Petri Airio on 8.3.2017.
  */

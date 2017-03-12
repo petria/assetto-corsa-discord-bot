@@ -24,6 +24,7 @@ public class DiscordBot implements  DiscordBroadcaster {
     private String TOKEN;
 
     private DiscordAPI api;
+    private static boolean connected = false;
 
     public DiscordBot() {
     }
@@ -47,9 +48,10 @@ public class DiscordBot implements  DiscordBroadcaster {
 
             @Override
             public void onSuccess(DiscordAPI api) {
+
                 log.debug("connected: {}", api);
                 // register listener
-
+                DiscordBot.connected = true;
                 api.registerListener(new MessageCreateListener() {
                     @Override
                     public void onMessageCreate(DiscordAPI api, Message message) {
@@ -75,7 +77,11 @@ public class DiscordBot implements  DiscordBroadcaster {
     public void sendMessage(String message) {
         Collection<Channel> channels = api.getChannels();
         Channel next = channels.iterator().next();
-        log.debug("Sending msg to: {}", next);
-        next.sendMessage(message);
+        if (DiscordBot.connected) {
+            log.debug("Sending msg to: {}", next);
+            next.sendMessage(message);
+        } else {
+            log.debug("Not sending, connected: {}", DiscordBot.connected);
+        }
     }
 }

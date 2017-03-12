@@ -1,5 +1,6 @@
-package airiot.fi.bot;
+package airiot.fi.bot.feedparser;
 
+import airiot.fi.bot.AssettoCorsaEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
