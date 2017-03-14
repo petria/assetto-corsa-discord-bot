@@ -2,6 +2,7 @@ package airiot.fi.bot.feedparser;
 
 import airiot.fi.bot.AssettoCorsaEvent;
 import airiot.fi.bot.DiscordBroadcaster;
+import airiot.fi.bot.udp.UdpListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,13 @@ public class AssettoCorsaFeedReader {
 
     @Autowired
     private AssettoCorsaFeedParser feedParser;
+
+    @Autowired
+    private AssettoCorsaFeedEventHandler eventHandler;
+
+
+    @Autowired
+    private UdpListener udpListener;
 
     @Value("${ECHO_INPUT}")
     private boolean echoInput;

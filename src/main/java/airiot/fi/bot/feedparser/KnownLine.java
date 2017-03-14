@@ -12,7 +12,8 @@ public enum KnownLine {
     DRIVER("DRIVER: (.*)", "Driver: %s"),
     LAP("LAP (.*)", "Lap: %s"),
     NEW_PICKUP_CONNECTION("NEW PICKUP CONNECTION from (.*)", "New pickup connection from: %s"),
-    REQUEST_CAR("REQUESTED CAR: (.*)", "Requested car: %s");
+    REQUEST_CAR("REQUESTED CAR: (.*)", "Requested car: %s"),
+    WARNING("Warning, (.*)", "Warning: %s");
 
     private final String pattern;
     private final String format;

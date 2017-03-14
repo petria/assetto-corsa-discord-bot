@@ -1,5 +1,6 @@
 package airiot.fi.bot;
 
+import airiot.fi.bot.feedparser.AssettoCorsaFeedEventHandler;
 import com.google.common.util.concurrent.FutureCallback;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.Javacord;
@@ -18,24 +19,33 @@ import java.util.Collection;
  */
 @Service
 @Slf4j
-public class DiscordBot implements  DiscordBroadcaster {
+public class DiscordBot implements DiscordBroadcaster, AssettoCorsaFeedEventHandler {
 
     @Value("${TOKEN}")
     private String TOKEN;
 
+    @Value("${CHANNEL_NAME}")
+    private String channelName;
+
     private DiscordAPI api;
-    private static boolean connected = false;
+    private boolean connected = false;
 
     public DiscordBot() {
     }
 
     @PostConstruct
     public void startService() {
+        if (channelName == null || channelName.length() == 0) {
+            log.error("NO BROADCAST CHANNEL_NAME DEFINED!");
+            System.exit(10);
+        }
         if (TOKEN != null) {
+            log.debug("Connecting to Discord...");
             this.api = Javacord.getApi(TOKEN, true);
             service();
         } else {
             log.error("NO DISCORD BOT TOKEN DEFINED!");
+            System.exit(10);
         }
     }
 
@@ -51,7 +61,7 @@ public class DiscordBot implements  DiscordBroadcaster {
 
                 log.debug("connected: {}", api);
                 // register listener
-                DiscordBot.connected = true;
+                connected = true;
                 api.registerListener(new MessageCreateListener() {
                     @Override
                     public void onMessageCreate(DiscordAPI api, Message message) {
@@ -77,11 +87,46 @@ public class DiscordBot implements  DiscordBroadcaster {
     public void sendMessage(String message) {
         Collection<Channel> channels = api.getChannels();
         Channel next = channels.iterator().next();
-        if (DiscordBot.connected) {
+        if (connected) {
             log.debug("Sending msg to: {}", next);
             next.sendMessage(message);
         } else {
-            log.debug("Not sending, connected: {}", DiscordBot.connected);
+            log.debug("Not sending, connected: {}", connected);
         }
+    }
+
+    @Override
+    public void handleChatEvent(AssettoCorsaEvent event) {
+
+    }
+
+    @Override
+    public void handleCleanExitEvent(AssettoCorsaEvent event) {
+
+    }
+
+    @Override
+    public void handleDriverAcceptedForEvent(AssettoCorsaEvent event) {
+
+    }
+
+    @Override
+    public void handleDriverEvent(AssettoCorsaEvent event) {
+
+    }
+
+    @Override
+    public void handleNewPickupConnectionEvent(AssettoCorsaEvent event) {
+
+    }
+
+    @Override
+    public void handleRequestCarEvent(AssettoCorsaEvent event) {
+
+    }
+
+    @Override
+    public void handleWarningEvent(AssettoCorsaEvent event) {
+
     }
 }
