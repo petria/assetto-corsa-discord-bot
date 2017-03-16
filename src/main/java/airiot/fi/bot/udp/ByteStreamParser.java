@@ -1,74 +1,89 @@
 package airiot.fi.bot.udp;
 
+import airiot.fi.bot.udp.packets.ACUDPPacketEnums;
+import airiot.fi.bot.udp.packets.ACUPDPacket;
 import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 import com.ibm.icu.impl.UTF32;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Petri Airio on 14.3.2017.
  */
 public class ByteStreamParser {
-    //                                    A                     a                       term
-    private static byte[] UTF32_DATA = {0x41, 0x00, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 0xf};
 
+    private final ByteArrayDataInput stream;
 
-    private void parseUTF32fromStream(ByteArrayInputStream stream) {
-        int b = stream.read();
-
-        int foo = 0;
+    public ByteStreamParser(ByteArrayDataInput stream) {
+        this.stream = stream;
     }
 
+    public ACUPDPacket createPacket() {
+        int type = stream.readUnsignedByte();
+        ACUDPPacketEnums.ACUDPPacketType packetType = ACUDPPacketEnums.ACUDPPacketType.getByType(type);
+        ACUPDPacket packet = new ACUPDPacket(packetType);
 
-    public static byte[] getBytesUntilMarker(ByteArrayDataInput dataInput, int endMarker) {
-        boolean found = false;
-        List<Integer> bytes = new ArrayList<>();
-        while (!found) {
-            int uByte = dataInput.readUnsignedByte();
-            if (uByte != endMarker) {
-                bytes.add(uByte);
-            } else {
-                break;
+        for (ACUDPPacketEnums.UDPPacketField field : packetType.getFields()) {
+            switch (field.getFieldType()) {
+                case ASCII:
+                    packet.setFieldValue(field, getASCII(stream));
+                    break;
+                case UINT8:
+                    packet.setFieldValue(field, getUINT8(stream));
+                    break;
+                case UINT16:
+                    packet.setFieldValue(field, getUINT16(stream));
+                    break;
+                case UINT32:
+                    packet.setFieldValue(field, getUINT32(stream));
+                    break;
+                case UTF32:
+                    packet.setFieldValue(field, getUTF32(stream));
+                    break;
+                default:
+                    System.out.printf("not parsed: %s\n", field.getFieldType());
             }
         }
-        byte[] array = new byte[bytes.size()];
-        int idx = 0;
-        for (int i : bytes) {
-            array[idx] = (byte) i;
-            idx++;
-        }
-        return array;
 
+        return packet;
     }
 
-    public static void main(String[] args) throws IOException {
-        ByteStreamParser parser = new ByteStreamParser();
-        ByteArrayInputStream stream = new ByteArrayInputStream(UTF32_DATA);
+    private String getUINT32(ByteArrayDataInput stream) {
+        int data = stream.readInt();
+        return data + "";
+    }
 
-        Path path = Paths.get("50");
-        byte[] data = Files.readAllBytes(path);
+    private String getUINT16(ByteArrayDataInput stream) {
+        int data = stream.readUnsignedShort();
+        return data + "";
+    }
 
-        ByteArrayDataInput dataInput = ByteStreams.newDataInput(data);
+    private String getASCII(ByteArrayDataInput stream) {
+        int size = stream.readUnsignedByte();
+        byte[] bytes = new byte[size];
+        int idx = 0;
+        for (int count = 0; count < bytes.length; count++) {
+            bytes[idx] = (byte) stream.readUnsignedByte();
+            idx++;
+        }
+        String data = new String(bytes);
+        return data;
+    }
 
-        int uByte1 = dataInput.readUnsignedByte();
-        int uByte2 = dataInput.readUnsignedByte();
-        int uByte3 = dataInput.readUnsignedByte();
-        int uByte4 = dataInput.readUnsignedByte();
-        int uByte5 = dataInput.readUnsignedByte();
-        int uByte6 = dataInput.readUnsignedByte();
-
-        byte[] utf32 = getBytesUntilMarker(dataInput, 0xf);
+    private String getUTF32(ByteArrayDataInput stream) {
+        int size = stream.readUnsignedByte();
+        byte[] utfBytes = new byte[size * 4];
+        int idx = 0;
+        for (int count = 0; count < size * 4; count++) {
+            utfBytes[idx] = (byte) stream.readUnsignedByte();
+            idx++;
+        }
         UTF32 leInstance = UTF32.getLEInstance();
-        String name = leInstance.fromBytes(utf32);
-        int foo = 0;
+        String data = leInstance.fromBytes(utfBytes);
+        return data;
+    }
 
+    private String getUINT8(ByteArrayDataInput stream) {
+        int uint8 = stream.readUnsignedByte();
+        return uint8 + "";
     }
 
 }
