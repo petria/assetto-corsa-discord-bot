@@ -56,6 +56,11 @@ public class ByteStreamParser {
         return data + "";
     }
 
+    private String getUINT8(ByteArrayDataInput stream) {
+        int uint8 = stream.readUnsignedByte();
+        return uint8 + "";
+    }
+
     private String getASCII(ByteArrayDataInput stream) {
         int size = stream.readUnsignedByte();
         byte[] bytes = new byte[size];
@@ -79,11 +84,6 @@ public class ByteStreamParser {
         UTF32 leInstance = UTF32.getLEInstance();
         String data = leInstance.fromBytes(utfBytes);
         return data;
-    }
-
-    private String getUINT8(ByteArrayDataInput stream) {
-        int uint8 = stream.readUnsignedByte();
-        return uint8 + "";
     }
 
 }
