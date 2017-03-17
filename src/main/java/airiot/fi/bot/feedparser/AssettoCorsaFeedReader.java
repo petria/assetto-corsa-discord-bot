@@ -6,10 +6,9 @@ import airiot.fi.bot.udp.UdpListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Scanner;
 
 /**
@@ -17,7 +16,7 @@ import java.util.Scanner;
  */
 @Component
 @Slf4j
-public class AssettoCorsaFeedReader implements CommandLineRunner {
+public class AssettoCorsaFeedReader implements Runnable {
 
     private static Scanner sc = new Scanner(System.in);
 
@@ -38,8 +37,8 @@ public class AssettoCorsaFeedReader implements CommandLineRunner {
     private boolean echoInput;
 
 
-    @Async
-    public void readSystemIn() {
+    @Override
+    public void run() {
         log.debug("Ready for input!");
         while (true) {
             String line = sc.nextLine();
@@ -53,9 +52,11 @@ public class AssettoCorsaFeedReader implements CommandLineRunner {
         }
     }
 
-    @Override
-    public void run(String... strings) throws Exception {
-        readSystemIn();
+    @PostConstruct
+    public void init() {
+        Thread t = new Thread(this);
+        t.setName("AssettoCorsaFeedReader");
+        t.start();
     }
 
 }

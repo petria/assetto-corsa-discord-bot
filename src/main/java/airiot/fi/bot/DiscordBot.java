@@ -42,19 +42,17 @@ public class DiscordBot implements DiscordBroadcaster, AssettoCorsaFeedEventHand
         if (TOKEN != null) {
             log.debug("Connecting to Discord...");
             this.api = Javacord.getApi(TOKEN, true);
-            service();
+            run();
         } else {
             log.error("NO DISCORD BOT TOKEN DEFINED!");
             System.exit(10);
         }
     }
 
-    public void service() {
-
+    private void run() {
         // connect
+        log.debug("Connecting DISCORD...");
         api.connect(new FutureCallback<DiscordAPI>() {
-
-
 
             @Override
             public void onSuccess(DiscordAPI api) {
@@ -81,13 +79,17 @@ public class DiscordBot implements DiscordBroadcaster, AssettoCorsaFeedEventHand
                 t.printStackTrace();
             }
         });
+
+        log.debug("Connecting DONE!");
+
     }
 
     @Override
     public void sendMessage(String message) {
-        Collection<Channel> channels = api.getChannels();
-        Channel next = channels.iterator().next();
         if (connected) {
+            Collection<Channel> channels = api.getChannels();
+            Channel next = channels.iterator().next();
+
             log.debug("Sending msg to: {}", next);
             next.sendMessage(message);
         } else {

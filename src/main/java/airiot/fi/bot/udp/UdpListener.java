@@ -7,10 +7,9 @@ import airiot.fi.bot.util.SystemScriptRunnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,7 +21,7 @@ import java.util.Arrays;
  */
 @Service
 @Slf4j
-public class UdpListener implements CommandLineRunner {
+public class UdpListener implements Runnable {
 
     @Value("${UDP_PLUGIN_PORT}")
     private int port;
@@ -36,9 +35,10 @@ public class UdpListener implements CommandLineRunner {
     @Autowired
     private DiscordBroadcaster discordBroadcaster;
 
+    private String pythonScript;
 
-    @Async
-    private void pluginReceivePackers(String pythonScript) {
+    @Override
+    public void run() {
         byte[] receiveData = new byte[1024];
 
         try {
@@ -50,7 +50,8 @@ public class UdpListener implements CommandLineRunner {
                 serverSocket.receive(receivePacket);
                 int len = receivePacket.getLength();
                 byte[] dataPacket = Arrays.copyOf(receivePacket.getData(), len);
-                String bytesFile = fileUtil.copyBytesToTmpFile(dataPacket);
+                String type = dataPacket[0] + "";
+                String bytesFile = fileUtil.copyBytesToTmpFile(type + "_", dataPacket);
                 String[] strings = systemScriptRunnerService.runScript(SystemScript.PYTHON_SCRIPT, pythonScript, bytesFile);
                 if (strings.length > 0) {
                     String udpEvent = strings[strings.length - 1];
@@ -63,15 +64,17 @@ public class UdpListener implements CommandLineRunner {
         }
     }
 
-    @Override
-    public void run(String... strings) throws Exception {
+    @PostConstruct
+    public void init() {
         StringBuilder sb = new StringBuilder();
         File tmpFile;
         try {
             tmpFile = File.createTempFile("print_events_from_bytes.py", "");
             fileUtil.copyResourceToFile("/print_events_from_bytes.py", tmpFile, sb);
-            String pythonScript = tmpFile.getAbsolutePath();
-            pluginReceivePackers(pythonScript);
+            this.pythonScript = tmpFile.getAbsolutePath();
+            Thread t = new Thread(this);
+            t.setName("UdpListener");
+            t.start();
 
         } catch (IOException e) {
             log.error("Failed to get metar stations", e);

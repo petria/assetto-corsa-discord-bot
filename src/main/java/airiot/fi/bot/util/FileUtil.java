@@ -35,8 +35,8 @@ public class FileUtil {
         return extractPath(path);
     }
 
-    public String copyBytesToTmpFile(byte[] content) throws IOException {
-        File tmpFile = File.createTempFile("bytes", "");
+    public String copyBytesToTmpFile(String prefix, byte[] content) throws IOException {
+        File tmpFile = File.createTempFile(prefix, "");
         OutputStream out = new FileOutputStream(tmpFile);
         BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile));
         out.write(content);
@@ -44,6 +44,10 @@ public class FileUtil {
         String tmpResourcePath = tmpFile.getAbsolutePath();
         log.info("byte[] copied resource to {}", tmpResourcePath);
         return tmpResourcePath;
+    }
+
+    public String copyBytesToTmpFile(byte[] content) throws IOException {
+        return copyBytesToTmpFile("bytes", content);
     }
 
     public String copyResourceToFile(String resource, File target, StringBuilder... contents) throws IOException {
