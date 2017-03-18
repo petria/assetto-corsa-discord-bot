@@ -7,7 +7,8 @@ import static airiot.fi.bot.udp.packets.ACUDPPacketEnums.UDPData.*;
  */
 public enum UdpPacket {
 
-    PROTO_VERSION(ACUDPPacketEnums.UDPPacketName.VERSION, ACUDPPacketEnums.UDPDataField.get("proto_version", UINT8_DATA)),
+    PROTO_VERSION(ACUDPPacketEnums.UDPPacketName.VERSION,
+            ACUDPPacketEnums.UDPDataField.get("proto_version", UINT8_DATA)),
 
     LAP_COMPLETED(ACUDPPacketEnums.UDPPacketName.LAP_COMPLETED,
             ACUDPPacketEnums.UDPDataField.get("car_id", UINT8_DATA),

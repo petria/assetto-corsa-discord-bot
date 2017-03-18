@@ -32,6 +32,9 @@ public class UdpPacketParserImpl implements UdpPacketParser {
             case ASCII_DATA:
                 parsed = getASCII(this.stream);
                 break;
+            case BOOL_DATA:
+                parsed = getBool(this.stream);
+                break;
             case FLOAT_DATA:
                 parsed = getFloat(this.stream);
                 break;
@@ -88,12 +91,16 @@ public class UdpPacketParserImpl implements UdpPacketParser {
     private String parseStruct(ByteArrayDataInput stream, ACUDPPacketEnums.UDPDataField structField) {
         int structCount = stream.readUnsignedByte();
         List<ACUDPPacketEnums.UDPDataField.StructField> structFields = structField.getStructFields();
+        String str = "<" + structField.getName() + " ";
         for (int i = 0; i < structCount; i++) {
+            String value = "<";
             for (ACUDPPacketEnums.UDPDataField.StructField sf : structFields) {
                 String parsed = parseField(sf.field); // TODO
+                value += sf.name + " ='" + parsed + "' ";
             }
+            str += value += "> ";
         }
-        return "<struct>";
+        return str;
     }
 
     private String getBool(ByteArrayDataInput stream) {
