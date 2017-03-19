@@ -26,7 +26,7 @@ public class UdpPacketTest {
 
     @Test
     public void testNewSessionPacket() throws IOException {
-        byte[] data = readFileToBytes("50");
+        byte[] data = readFileToBytes("packets/50_2757344424365628631");
         ByteArrayDataInput dataInput = ByteStreams.newDataInput(data);
         ByteStreamParser parser = new ByteStreamParser(dataInput);
         ACUPDPacket packet = parser.createPacket();
