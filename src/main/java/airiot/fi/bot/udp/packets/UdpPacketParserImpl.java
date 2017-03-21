@@ -1,8 +1,5 @@
-package airiot.fi.bot.udp;
+package airiot.fi.bot.udp.packets;
 
-import airiot.fi.bot.udp.packets.ACUDPPacketEnums;
-import airiot.fi.bot.udp.packets.ParsedUdpPacket;
-import airiot.fi.bot.udp.packets.UdpPacket;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.ibm.icu.impl.UTF32;
@@ -19,9 +16,11 @@ import static airiot.fi.bot.udp.packets.ACUDPPacketEnums.UDPData.STRUCT_DATA;
 public class UdpPacketParserImpl implements UdpPacketParser {
 
     private ByteArrayDataInput stream;
+    private byte[] udpData;
 
     public UdpPacketParserImpl(byte[] udpData) {
         this.stream = ByteStreams.newDataInput(udpData);
+        this.udpData = udpData;
     }
 
     //    private String parseField(ACUDPPacketEnums.UDPDataField field) {

@@ -1,8 +1,7 @@
-package airiot.fi.bot.feedparser;
+package airiot.fi;
 
-import airiot.fi.bot.AssettoCorsaEvent;
 import airiot.fi.bot.DiscordBroadcaster;
-import airiot.fi.bot.udp.UdpListener;
+import airiot.fi.bot.udp.UdpServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,7 @@ import java.util.Scanner;
  */
 @Component
 @Slf4j
-public class AssettoCorsaFeedReader implements Runnable {
+public class CommandReader implements Runnable {
 
     private static Scanner sc = new Scanner(System.in);
 
@@ -24,14 +23,7 @@ public class AssettoCorsaFeedReader implements Runnable {
     private DiscordBroadcaster broadcaster;
 
     @Autowired
-    private AssettoCorsaFeedParser feedParser;
-
-    @Autowired
-    private AssettoCorsaFeedEventHandler eventHandler;
-
-
-    @Autowired
-    private UdpListener udpListener;
+    private UdpServer udpServer;
 
     @Value("${ECHO_INPUT}")
     private boolean echoInput;
@@ -45,17 +37,23 @@ public class AssettoCorsaFeedReader implements Runnable {
             if (echoInput) {
                 System.out.println(line);
             }
-            AssettoCorsaEvent event = feedParser.parseFeedLine(line);
-            if (event != null) {
-                broadcaster.sendMessage(event.getMessage());
+        }
+    }
+
+    public void parseLine(String line) {
+        if (line.startsWith("!broad ")) {
+            String message = line.replaceFirst("!broad ", "");
+            if (message.length() > 0) {
+                udpServer.addBroadCastMessage(message);
             }
         }
     }
 
+
     @PostConstruct
     public void init() {
         Thread t = new Thread(this);
-        t.setName("AssettoCorsaFeedReader");
+        t.setName("CommandReader");
         t.start();
     }
 

@@ -1,6 +1,4 @@
-package airiot.fi.bot.udp;
-
-import airiot.fi.bot.udp.packets.ParsedUdpPacket;
+package airiot.fi.bot.udp.packets;
 
 /**
  * Created by Petri Airio on 17.3.2017.

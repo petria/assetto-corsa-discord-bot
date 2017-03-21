@@ -60,7 +60,20 @@ public class ACUDPPacketEnums {
         CLIENT_LOADED(58),
         SESSION_INFO(59),
         ERROR(60),
-        LAP_COMPLETED(73);
+        LAP_COMPLETED(73),
+
+        CLIENT_EVENT(130),
+
+        REALTIMEPOS_INTERVAL(200),
+        SEND_CHAT(202),
+        GET_CAR_INFO(201),
+        BROADCAST_CHAT(203),
+        GET_SESSION_INFO(204),
+        SET_SESSION_INFO(205),
+        KICK_USER(206),
+        NEXT_SESSION(207),
+        RESTART_SESSION(208),
+        ADMIN_COMMAND(209);
 
         private final int type;
 

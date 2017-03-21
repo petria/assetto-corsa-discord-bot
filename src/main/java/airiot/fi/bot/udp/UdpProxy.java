@@ -6,6 +6,6 @@ package airiot.fi.bot.udp;
 public interface UdpProxy {
 
 
-    void forwardPacket(byte[] data);
+    void forwardPacket(byte[] data, int size);
 
 }

@@ -1,6 +1,6 @@
 package airiot.fi.bot;
 
-import airiot.fi.bot.feedparser.AssettoCorsaFeedEventHandler;
+
 import com.google.common.util.concurrent.FutureCallback;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.Javacord;
@@ -19,7 +19,7 @@ import java.util.Collection;
  */
 @Service
 @Slf4j
-public class DiscordBot implements DiscordBroadcaster, AssettoCorsaFeedEventHandler {
+public class DiscordBot implements DiscordBroadcaster {
 
     @Value("${TOKEN}")
     private String TOKEN;
@@ -97,38 +97,4 @@ public class DiscordBot implements DiscordBroadcaster, AssettoCorsaFeedEventHand
         }
     }
 
-    @Override
-    public void handleChatEvent(AssettoCorsaEvent event) {
-
-    }
-
-    @Override
-    public void handleCleanExitEvent(AssettoCorsaEvent event) {
-
-    }
-
-    @Override
-    public void handleDriverAcceptedForEvent(AssettoCorsaEvent event) {
-
-    }
-
-    @Override
-    public void handleDriverEvent(AssettoCorsaEvent event) {
-
-    }
-
-    @Override
-    public void handleNewPickupConnectionEvent(AssettoCorsaEvent event) {
-
-    }
-
-    @Override
-    public void handleRequestCarEvent(AssettoCorsaEvent event) {
-
-    }
-
-    @Override
-    public void handleWarningEvent(AssettoCorsaEvent event) {
-
-    }
 }

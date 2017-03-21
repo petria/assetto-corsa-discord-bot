@@ -1,8 +1,8 @@
 package airiot.fi;
 
-import airiot.fi.bot.udp.UdpPacketParserImpl;
 import airiot.fi.bot.udp.packets.ACUDPPacketEnums;
 import airiot.fi.bot.udp.packets.ParsedUdpPacket;
+import airiot.fi.bot.udp.packets.UdpPacketParserImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

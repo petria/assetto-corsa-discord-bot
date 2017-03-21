@@ -59,6 +59,25 @@ public enum UdpPacket {
             ACUDPPacketEnums.UDPDataField.get("car_id", UINT8_DATA)
     ),
 
+    SESSION_INFO(ACUDPPacketEnums.UDPPacketName.SESSION_INFO,
+            ACUDPPacketEnums.UDPDataField.get("proto_version", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("session_index", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("current_session_index", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("session_count", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("server_name", UTF32_DATA),
+            ACUDPPacketEnums.UDPDataField.get("track_name", ASCII_DATA),
+            ACUDPPacketEnums.UDPDataField.get("track_config", ASCII_DATA),
+            ACUDPPacketEnums.UDPDataField.get("name", ASCII_DATA),
+            ACUDPPacketEnums.UDPDataField.get("session_type", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("time", UINT16_DATA),
+            ACUDPPacketEnums.UDPDataField.get("laps", UINT16_DATA),
+            ACUDPPacketEnums.UDPDataField.get("wait_time", UINT16_DATA),
+            ACUDPPacketEnums.UDPDataField.get("ambient_temp", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("track_temp", UINT8_DATA),
+            ACUDPPacketEnums.UDPDataField.get("weather_graph", ASCII_DATA),
+            ACUDPPacketEnums.UDPDataField.get("elapsed_ms", UINT32_DATA)
+    ),
+
     LAP_COMPLETED(ACUDPPacketEnums.UDPPacketName.LAP_COMPLETED,
             ACUDPPacketEnums.UDPDataField.get("car_id", UINT8_DATA),
             ACUDPPacketEnums.UDPDataField.get("lap_time", UINT32_DATA),
