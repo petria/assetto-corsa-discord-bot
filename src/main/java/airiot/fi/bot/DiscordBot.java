@@ -1,6 +1,7 @@
 package airiot.fi.bot;
 
 
+import airiot.fi.bot.udp.packets.ParsedUdpPacket;
 import com.google.common.util.concurrent.FutureCallback;
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.Javacord;
@@ -97,4 +98,8 @@ public class DiscordBot implements DiscordBroadcaster {
         }
     }
 
+    @Override
+    public void handleParsedUdpPacket(ParsedUdpPacket udpPacket) {
+
+    }
 }

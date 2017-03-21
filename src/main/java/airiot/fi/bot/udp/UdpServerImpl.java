@@ -61,24 +61,13 @@ public class UdpServerImpl implements Runnable, UdpServer {
                     UdpPacketParserImpl parser = new UdpPacketParserImpl(receivePacket.getData());
                     ParsedUdpPacket udpPacket = parser.parseUdpPacket();
                     if (udpPacket != null) {
-//                        log.debug("Got UDPPacket: {}", udpPacket.toString());
-//                    discordBroadcaster.sendMessage(udpPacket.toString());
+                        discordBroadcaster.handleParsedUdpPacket(udpPacket);
                     }
 
                 } catch (SocketTimeoutException ste) {
                     sendPackets(serverSocket);
-//                    sender.broadcastMessage("test");
-//                    log.debug("timeout!");
                 }
-/*                byte[] dataPacket = Arrays.copyOf(receivePacket.getData(), len);
-                String type = dataPacket[0] + "";
-                String bytesFile = fileUtil.copyBytesToTmpFile(type + "_", dataPacket);
-                String[] strings = systemScriptRunnerService.runScript(SystemScript.PYTHON_SCRIPT, pythonScript, bytesFile);
-                if (strings.length > 0) {
-                    String udpEvent = strings[strings.length - 1];
-                    discordBroadcaster.sendMessage(udpEvent);
-                }
-                fileUtil.deleteTmpFile(bytesFile);*/
+
             }
         } catch (Exception e) {
             log.error("Exception", e);
@@ -88,9 +77,8 @@ public class UdpServerImpl implements Runnable, UdpServer {
     private int serverLocalPort = 11000;
 
     private void sendPackets(DatagramSocket serverSocket) {
-        if (!udpPacketQueue.isEmpty()) {
+        while (!udpPacketQueue.isEmpty()) {
             byte[] data = udpPacketQueue.poll();
-            DatagramSocket socket = null;
             try {
                 InetAddress host = InetAddress.getByName("localhost");
                 DatagramPacket packet = new DatagramPacket(data, data.length, host, serverLocalPort);
