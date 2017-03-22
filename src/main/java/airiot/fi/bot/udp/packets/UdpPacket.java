@@ -69,13 +69,13 @@ public enum UdpPacket {
             ACUDPPacketEnums.UDPDataField.get("track_config", ASCII_DATA),
             ACUDPPacketEnums.UDPDataField.get("name", ASCII_DATA),
             ACUDPPacketEnums.UDPDataField.get("session_type", UINT8_DATA),
-            ACUDPPacketEnums.UDPDataField.get("time", UINT16_DATA),
+            ACUDPPacketEnums.UDPDataField.get("time", INT16_DATA),
             ACUDPPacketEnums.UDPDataField.get("laps", UINT16_DATA),
             ACUDPPacketEnums.UDPDataField.get("wait_time", UINT16_DATA),
             ACUDPPacketEnums.UDPDataField.get("ambient_temp", UINT8_DATA),
             ACUDPPacketEnums.UDPDataField.get("track_temp", UINT8_DATA),
             ACUDPPacketEnums.UDPDataField.get("weather_graph", ASCII_DATA),
-            ACUDPPacketEnums.UDPDataField.get("elapsed_ms", UINT32_DATA)
+            ACUDPPacketEnums.UDPDataField.get("elapsed_ms", INT32_DATA)
     ),
 
     LAP_COMPLETED(ACUDPPacketEnums.UDPPacketName.LAP_COMPLETED,
@@ -88,6 +88,14 @@ public enum UdpPacket {
                     .addStructField("rlaps", UINT16_DATA)
                     .addStructField("has_completed_flag", BOOL_DATA),
             ACUDPPacketEnums.UDPDataField.get("grip_level", FLOAT_DATA)
+
+
+    ),
+    GET_SESSION_INFO(ACUDPPacketEnums.UDPPacketName.GET_SESSION_INFO,
+            ACUDPPacketEnums.UDPDataField.get("session_index", INT16_DATA)),
+
+    UNKNOWN(ACUDPPacketEnums.UDPPacketName.UNKNOWN,
+            ACUDPPacketEnums.UDPDataField.get("type", UINT8_DATA)
     );
 
 
@@ -113,6 +121,6 @@ public enum UdpPacket {
                 return packet;
             }
         }
-        return null;
+        return UNKNOWN;
     }
 }

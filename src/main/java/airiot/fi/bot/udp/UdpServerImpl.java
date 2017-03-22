@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -29,21 +32,29 @@ import static com.igormaznitsa.jbbp.io.JBBPOut.BeginBin;
 public class UdpServerImpl implements Runnable, UdpServer {
 
     @Value("${UDP_PLUGIN_PORT}")
-    private int port;
+    private int UDP_PLUGIN_PORT;
+
+    private String LOG_DIR = "logs/";
 
     @Autowired
     private DiscordBroadcaster discordBroadcaster;
 
     private final Queue<byte[]> udpPacketQueue = new ConcurrentLinkedQueue<>();
 
+    private boolean logOk = false;
+
+    public UdpServerImpl() {
+
+    }
+
     @Override
     public void run() {
         byte[] receiveData = new byte[1024];
 
         try {
-            log.debug("Starting UDP receive on port: {}", port);
+            log.debug("Starting UDP receive on port: {}", UDP_PLUGIN_PORT);
 
-            DatagramSocket serverSocket = new DatagramSocket(port);
+            DatagramSocket serverSocket = new DatagramSocket(UDP_PLUGIN_PORT);
             serverSocket.setSoTimeout(50);
 
             UdpProxyImpl proxy = new UdpProxyImpl(this);
@@ -60,9 +71,9 @@ public class UdpServerImpl implements Runnable, UdpServer {
 
                     UdpPacketParserImpl parser = new UdpPacketParserImpl(receivePacket.getData());
                     ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-                    if (udpPacket != null) {
-                        discordBroadcaster.handleParsedUdpPacket(udpPacket);
-                    }
+                    logUdpPacket(">> ACSERVER", udpPacket);
+
+                    discordBroadcaster.handleParsedUdpPacket(udpPacket);
 
                 } catch (SocketTimeoutException ste) {
                     sendPackets(serverSocket);
@@ -83,10 +94,8 @@ public class UdpServerImpl implements Runnable, UdpServer {
                 InetAddress host = InetAddress.getByName("localhost");
                 DatagramPacket packet = new DatagramPacket(data, data.length, host, serverLocalPort);
                 serverSocket.send(packet);
-//                log.debug("Sent packet, size: {}", data.length);
-
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error while purging output queue", e);
             }
         }
     }
@@ -107,9 +116,26 @@ public class UdpServerImpl implements Runnable, UdpServer {
 
     @PostConstruct
     public void init() {
+        checkLogDir();
         Thread t = new Thread(this);
         t.setName("UdpServerImpl");
         t.start();
+    }
+
+    private void checkLogDir() {
+        File f = new File(LOG_DIR);
+        if (!f.exists()) {
+            boolean ok = f.mkdirs();
+            if (ok) {
+                log.debug("Log dir created: {}", f.getAbsolutePath());
+                this.logOk = true;
+            } else {
+                log.warn("Log dir create failed: {}", f.getAbsolutePath());
+                log.warn("Loging is disabled!");
+            }
+        } else {
+            this.logOk = true;
+        }
     }
 
     @Override
@@ -119,6 +145,62 @@ public class UdpServerImpl implements Runnable, UdpServer {
 
     @Override
     public void addUdpBytePacket(byte[] packet) {
-        this.udpPacketQueue.add(packet);
+        addToQueueAndLog("<< PROXY", packet);
     }
+
+    private void addToQueueAndLog(String direction, byte[] udpPacket) {
+        this.udpPacketQueue.add(udpPacket);
+        logUdpPacket(direction, udpPacket);
+    }
+
+    private void logUdpPacket(String direction, byte[] udpPacket) {
+        UdpPacketParserImpl parser = new UdpPacketParserImpl(udpPacket);
+        ParsedUdpPacket parsedUdpPacket = parser.parseUdpPacket();
+        logUdpPacket(direction, parsedUdpPacket);
+    }
+
+    private void logUdpPacket(String direction, ParsedUdpPacket parsedUdpPacket) {
+
+        if (this.logOk) {
+
+            String message = String.format("%-12s : %s\n", direction, parsedUdpPacket.toString());
+
+            String log = "logs/packets_log.txt";
+            BufferedWriter bw = null;
+            FileWriter fw = null;
+
+            try {
+                File file = new File(log);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                fw = new FileWriter(file.getAbsoluteFile(), true);
+                bw = new BufferedWriter(fw);
+
+                bw.write(message);
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            } finally {
+
+                try {
+
+                    if (bw != null)
+                        bw.close();
+
+                    if (fw != null)
+                        fw.close();
+
+                } catch (IOException ex) {
+
+                    ex.printStackTrace();
+
+                }
+            }
+        }
+    }
+
 }

@@ -19,6 +19,9 @@ public class ACUDPPacketEnums {
         UINT8,
         UINT16,
         UINT32,
+        INT8,
+        INT16,
+        INT32,
         UTF32;
 
         UDPPrimitive() {
@@ -34,6 +37,9 @@ public class ACUDPPacketEnums {
         UINT8_DATA(UINT8),
         UINT16_DATA(UINT16),
         UINT32_DATA(UINT32),
+        INT8_DATA(INT8),
+        INT16_DATA(INT16),
+        INT32_DATA(INT32),
         UTF32_DATA(UTF32);
 
         private final UDPPrimitive[] primitives;
@@ -73,7 +79,9 @@ public class ACUDPPacketEnums {
         KICK_USER(206),
         NEXT_SESSION(207),
         RESTART_SESSION(208),
-        ADMIN_COMMAND(209);
+        ADMIN_COMMAND(209),
+
+        UNKNOWN(-1);
 
         private final int type;
 

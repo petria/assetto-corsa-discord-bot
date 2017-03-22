@@ -59,9 +59,9 @@ public class UdpProxyImpl implements UdpProxy, Runnable {
                 serverSocket.receive(receivePacket);
                 int size = receivePacket.getLength();
                 byte[] dataPacket = Arrays.copyOf(receivePacket.getData(), size);
-                int type = dataPacket[0];
+/*                int type = dataPacket[0];
                 String filename = String.format("%x", type);
-                writeBytes(filename, dataPacket, size);
+                writeBytes(filename, dataPacket, size);*/
                 this.udpServer.addUdpBytePacket(dataPacket);
             }
         } catch (Exception e) {
