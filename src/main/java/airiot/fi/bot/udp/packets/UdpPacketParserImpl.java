@@ -5,6 +5,8 @@ import com.google.common.io.ByteStreams;
 import com.ibm.icu.impl.UTF32;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.List;
 
 import static airiot.fi.bot.udp.packets.ACUDPPacketEnums.UDPData.STRUCT_DATA;
@@ -118,72 +120,72 @@ public class UdpPacketParserImpl implements UdpPacketParser {
     }
 
     private String getUINT32(ByteArrayDataInput stream) {
-        int data = stream.readInt();
-        return data + "";
+        char t1 = (char) stream.readUnsignedByte();
+        char t2 = (char) stream.readUnsignedByte();
+        char t3 = (char) stream.readUnsignedByte();
+        char t4 = (char) stream.readUnsignedByte();
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put((byte) t1);
+        byteBuffer.put((byte) t2);
+        byteBuffer.put((byte) t3);
+        byteBuffer.put((byte) t4);
+
+        int t = byteBuffer.getInt(0);
+        return "" + t;
     }
 
     private String getUINT16(ByteArrayDataInput stream) {
-        int data = stream.readUnsignedShort();
-        return data + "";
+        char t1 = (char) stream.readUnsignedByte();
+        char t2 = (char) stream.readUnsignedByte();
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put((byte) t1);
+        byteBuffer.put((byte) t2);
+
+        short t = byteBuffer.getShort(0);
+        return "" + t;
     }
 
     private String getINT16(ByteArrayDataInput stream) {
-        int b1 = stream.readUnsignedByte();
-        int b2 = stream.readUnsignedByte();
-        byte[] paska = {(byte) b2, (byte) b1};
-// TODO         Integer.
-        int value = 0;
-        if (b1 == 255 && b2 == 255) {
-            value = 0;
-        } else {
-            value = b1;
-        }
-//        int value = stream.readUnsignedShort();
-        return "" + value;
+        char t1 = (char) stream.readUnsignedByte();
+        char t2 = (char) stream.readUnsignedByte();
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put((byte) t1);
+        byteBuffer.put((byte) t2);
+
+        short t = byteBuffer.getShort(0);
+        return "" + t;
     }
 
     private String getINT32(ByteArrayDataInput stream) {
-        int b1 = stream.readUnsignedByte();
-        int b2 = stream.readUnsignedByte();
-        int b3 = stream.readUnsignedByte();
-        int b4 = stream.readUnsignedByte();
+        char t1 = (char) stream.readUnsignedByte();
+        char t2 = (char) stream.readUnsignedByte();
+        char t3 = (char) stream.readUnsignedByte();
+        char t4 = (char) stream.readUnsignedByte();
 
-        String s1 = getPaddedBin(b1);
-        String s2 = getPaddedBin(b2);
-        String s3 = getPaddedBin(b3);
-        String s4 = getPaddedBin(b4);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put((byte) t1);
+        byteBuffer.put((byte) t2);
+        byteBuffer.put((byte) t3);
+        byteBuffer.put((byte) t4);
 
-        String bin = s4 + s3 + s2 + s1;
-
-        int value = 0;
-        if (b1 == 255 && b2 == 255) {
-            value = 0;
-        } else {
-            value = b1;
-        }
-//        11111111 11111111 1101100 10101101
-//        00000000 00000000 0010011 01010010
-        return "" + value;
-    }
-
-    private String getPaddedBin(int i) {
-        String s1 = Integer.toBinaryString(i);
-        if (s1.length() != 8) {
-            int pad = 8 - s1.length();
-            String str = "";
-            for (int x = 0; x < pad; x++) {
-                str += "0";
-            }
-
-//            s1 = String.format(fmt, 0) + s1;
-            s1 = str + s1;
-        }
-
-        return s1;
+        int t = byteBuffer.getInt(0);
+        return "" + t;
     }
 
     private String getUINT8(ByteArrayDataInput stream) {
-        int uint8 = stream.readUnsignedByte();
+        char t1 = (char) stream.readUnsignedByte();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put((byte) t1);
+
+        int uint8 = byteBuffer.get(0);
         return uint8 + "";
     }
 
