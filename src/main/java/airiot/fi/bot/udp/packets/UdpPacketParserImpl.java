@@ -120,70 +120,42 @@ public class UdpPacketParserImpl implements UdpPacketParser {
     }
 
     private String getUINT32(ByteArrayDataInput stream) {
-        char t1 = (char) stream.readUnsignedByte();
-        char t2 = (char) stream.readUnsignedByte();
-        char t3 = (char) stream.readUnsignedByte();
-        char t4 = (char) stream.readUnsignedByte();
+        byte[] buf = new byte[4];
+        stream.readFully(buf, 0, 4);
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put((byte) t1);
-        byteBuffer.put((byte) t2);
-        byteBuffer.put((byte) t3);
-        byteBuffer.put((byte) t4);
+        byteBuffer.put(buf);
 
         int t = byteBuffer.getInt(0);
         return "" + t;
     }
 
+    private String getINT32(ByteArrayDataInput stream) {
+        return getUINT32(stream);
+    }
+
     private String getUINT16(ByteArrayDataInput stream) {
-        char t1 = (char) stream.readUnsignedByte();
-        char t2 = (char) stream.readUnsignedByte();
+        byte[] buf = new byte[2];
+        stream.readFully(buf, 0, 2);
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(2);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put((byte) t1);
-        byteBuffer.put((byte) t2);
+        byteBuffer.put(buf);
 
         short t = byteBuffer.getShort(0);
         return "" + t;
     }
 
     private String getINT16(ByteArrayDataInput stream) {
-        char t1 = (char) stream.readUnsignedByte();
-        char t2 = (char) stream.readUnsignedByte();
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put((byte) t1);
-        byteBuffer.put((byte) t2);
-
-        short t = byteBuffer.getShort(0);
-        return "" + t;
+        return getUINT16(stream);
     }
 
-    private String getINT32(ByteArrayDataInput stream) {
-        char t1 = (char) stream.readUnsignedByte();
-        char t2 = (char) stream.readUnsignedByte();
-        char t3 = (char) stream.readUnsignedByte();
-        char t4 = (char) stream.readUnsignedByte();
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put((byte) t1);
-        byteBuffer.put((byte) t2);
-        byteBuffer.put((byte) t3);
-        byteBuffer.put((byte) t4);
-
-        int t = byteBuffer.getInt(0);
-        return "" + t;
-    }
 
     private String getUINT8(ByteArrayDataInput stream) {
-        char t1 = (char) stream.readUnsignedByte();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put((byte) t1);
+        byteBuffer.put((byte) stream.readUnsignedByte());
 
         int uint8 = byteBuffer.get(0);
         return uint8 + "";

@@ -22,82 +22,123 @@ public class UdpPacketParseTest {
         return Files.readAllBytes(f.toPath());
     }
 
+    private File[] getMatchingFiles(String directory, String pattern) {
+        File dir = new File(directory);
+        return dir.listFiles((d, name) -> name.matches(pattern));
+    }
+
     @Test
     public void testNewSession() throws IOException {
-        byte[] data = readFileToBytes("packets/50_6286312093910348856");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+        File[] files = getMatchingFiles("packets/", "50_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(NEW_SESSION, packetName);
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(NEW_SESSION, packetName);
+        }
     }
 
     @Test
     public void testNewConnection() throws IOException {
-        byte[] data = readFileToBytes("packets/51_998706441100862361");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+        File[] files = getMatchingFiles("packets/", "51_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(NEW_CONNECTION, packetName);
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(NEW_CONNECTION, packetName);
+        }
     }
 
     @Test
     public void testConnectionClosed() throws IOException {
-        byte[] data = readFileToBytes("packets/52_7670980051013914962");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+        File[] files = getMatchingFiles("packets/", "52_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(CONNECTION_CLOSED, packetName);
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
+
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(CONNECTION_CLOSED, packetName);
+        }
     }
 
     @Test
     public void testEndSession() throws IOException {
-        byte[] data = readFileToBytes("packets/55_5509519819115648313");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+        File[] files = getMatchingFiles("packets/", "55_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(END_SESSION, packetName);
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(END_SESSION, packetName);
+        }
     }
 
     @Test
     public void testVersion() throws IOException {
-        byte[] data = readFileToBytes("packets/56_5445773002710142849");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+        File[] files = getMatchingFiles("packets/", "56_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(VERSION, packetName);
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(VERSION, packetName);
+        }
     }
 
     @Test
     public void testChat() throws IOException {
-        byte[] data = readFileToBytes("packets/57_1003815470007676071");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+        File[] files = getMatchingFiles("packets/", "57_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(CHAT, packetName);
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(CHAT, packetName);
+        }
     }
 
 
     @Test
-    public void testLapCompleted() throws IOException {
-        byte[] data = readFileToBytes("packets/73_690026479316835395");
-        UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
-        ParsedUdpPacket udpPacket = parser.parseUdpPacket();
-        System.out.println(udpPacket.toString());
+    public void testClientLoaded() throws IOException {
+        File[] files = getMatchingFiles("packets/", "58_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
 
-        ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
-        Assert.assertEquals(LAP_COMPLETED, packetName);
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(CLIENT_LOADED, packetName);
+        }
+    }
+
+    @Test
+    public void testLapCompleted() throws IOException {
+        File[] files = getMatchingFiles("packets/", "73_.*");
+        for (File file : files) {
+            byte[] data = Files.readAllBytes(file.toPath());
+            UdpPacketParserImpl parser = new UdpPacketParserImpl(data);
+            ParsedUdpPacket udpPacket = parser.parseUdpPacket();
+            System.out.println(udpPacket.toString());
+
+            ACUDPPacketEnums.UDPPacketName packetName = udpPacket.getPacketName();
+            Assert.assertEquals(LAP_COMPLETED, packetName);
+        }
     }
 
 
