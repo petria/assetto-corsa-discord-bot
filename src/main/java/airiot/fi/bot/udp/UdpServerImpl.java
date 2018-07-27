@@ -73,7 +73,11 @@ public class UdpServerImpl implements Runnable, UdpServer {
                     ParsedUdpPacket udpPacket = parser.parseUdpPacket();
                     logUdpPacket(">> ACSERVER", udpPacket);
 
-                    discordBroadcaster.handleParsedUdpPacket(udpPacket);
+                    try {
+                        discordBroadcaster.handleParsedUdpPacket(udpPacket);
+                    } catch (Exception e) {
+                        log.error("Exception", e);
+                    }
 
                 } catch (SocketTimeoutException ste) {
                     sendPackets(serverSocket);

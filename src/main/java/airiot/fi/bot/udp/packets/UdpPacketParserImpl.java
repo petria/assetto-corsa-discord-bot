@@ -17,7 +17,7 @@ import static airiot.fi.bot.udp.packets.ACUDPPacketEnums.UDPData.STRUCT_DATA;
 @Slf4j
 public class UdpPacketParserImpl implements UdpPacketParser {
 
-    private ByteArrayDataInput stream;
+    protected ByteArrayDataInput stream;
     private byte[] udpData;
 
     public UdpPacketParserImpl(byte[] udpData) {
